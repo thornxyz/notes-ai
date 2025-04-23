@@ -4,7 +4,7 @@ A modern, full-featured note-taking app built with [Next.js](https://nextjs.org)
 
 ## 🌐 Live Demo
 
-Check out the live version of the app here: [Your Deployment Link](https://notes-ai-ochre.vercel.app/)
+Check out the live version of the app here: [https://notes-ai-ochre.vercel.app/](https://notes-ai-ochre.vercel.app/)
 
 ---
 
