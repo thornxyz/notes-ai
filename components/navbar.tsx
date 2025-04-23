@@ -6,7 +6,7 @@ function Navbar() {
   return (
     <div className="flex border justify-between p-4 rounded-2xl shadow-md items-center mx-4">
       <Link href="/">
-        <h1 className="text-4xl font-bold">Notes</h1>
+        <h1 className="text-4xl font-bold ml-6">Notes</h1>
       </Link>
       <div className="flex items-center gap-4">
         <ThemeToggle />
