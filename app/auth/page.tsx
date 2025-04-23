@@ -4,15 +4,18 @@ import { Button } from "@/components/ui/button";
 import { KeyRound } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { createClient } from "@/utils/supabase/client";
+import { useSearchParams } from "next/navigation";
 
-function page() {
+function Page() {
+  const params = useSearchParams().get("next");
+
   const handleGoogleSignIn = async () => {
     try {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: location.origin + "/auth/callback?next=" + params,
         },
       });
       if (error) throw error;
@@ -42,4 +45,4 @@ function page() {
     </div>
   );
 }
-export default page;
+export default Page;
