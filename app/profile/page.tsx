@@ -8,15 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Pencil } from "lucide-react";
-import { ImageUploadDemo } from "../components/ui/demo";
+import { ImageUploadDemo } from "@/components/upload-component";
 
 export default function ProfilePage() {
   const supabase = createClient();
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
-  const [editingImage, setEditingImage] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({});
-  const [uploading, setUploading] = useState(false);
 
   const { data: profile, isLoading } = useQuery<User>({
     queryKey: ["user"],
@@ -56,7 +54,6 @@ export default function ProfilePage() {
     onSuccess: (data) => {
       queryClient.setQueryData(["user"], data);
       setEditing(false);
-      setEditingImage(false);
       setFormData({});
     },
     onError: (error) => {
@@ -78,7 +75,6 @@ export default function ProfilePage() {
 
   const handleCancel = () => {
     setEditing(false);
-    setEditingImage(false);
     setFormData({});
   };
 
@@ -86,7 +82,7 @@ export default function ProfilePage() {
   if (!profile) return <div>Profile not found</div>;
 
   return (
-    <div className="container max-w-2xl mx-auto p-6 space-y-8">
+    <div className="flex flex-col items-center gap-6">
       <div className="flex items-center gap-6">
         <Avatar className="w-24 h-24">
           <AvatarImage src={profile.image_url} alt={profile.display_name} />
@@ -123,7 +119,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 mt-4">
         <ImageUploadDemo />
 
         {editing && (

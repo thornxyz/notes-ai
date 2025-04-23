@@ -4,6 +4,7 @@ import { useNotes } from "@/app/hook/useNotes";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { format } from "date-fns";
+import { FaPlus } from "react-icons/fa";
 
 export default function DashboardPage() {
   const { notes, isLoading } = useNotes();
@@ -17,7 +18,10 @@ export default function DashboardPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">My Notes</h1>
         <Link href="/notes/new">
-          <Button className="cursor-pointer">Create New Note</Button>
+          <Button className="cursor-pointer">
+            Create New Note
+            <FaPlus className="mt-0.5" />
+          </Button>
         </Link>
       </div>
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+    <div className="flex flex-col items-center px-4 py-12 text-center">
       <h1 className="text-5xl font-bold mb-4">Welcome to Notes</h1>
       <p className="text-muted-foreground text-lg max-w-md mb-8">
         Capture your thoughts, organize ideas, and keep everything in one place.

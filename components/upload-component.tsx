@@ -1,13 +1,17 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useImageUpload } from "./component"
-import { ImagePlus, X, Upload, Trash2 } from "lucide-react"
-import Image from "next/image"
-import { useCallback, useState } from "react"
-import { cn } from "@/lib/utils"
-import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query"
-import { createClient } from "@/utils/supabase/client"
-import { v4 as uuidv4 } from 'uuid'; 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useImageUpload } from "./ImageUploadhook";
+import { ImagePlus, X, Upload, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useState } from "react";
+import { cn } from "@/lib/utils";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { createClient } from "@/utils/supabase/client";
+import { v4 as uuidv4 } from "uuid";
 import { User } from "@/types";
 
 export function ImageUploadDemo() {
@@ -20,13 +24,13 @@ export function ImageUploadDemo() {
     handleRemove,
   } = useImageUpload({
     onUpload: (url: string) => console.log("Uploaded image URL:", url),
-  })
+  });
 
-  const [isDragging, setIsDragging] = useState(false)
+  const [isDragging, setIsDragging] = useState(false);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const updateProfileMutation = useMutation({
     mutationFn: async (image_url: string) => {
@@ -52,34 +56,37 @@ export function ImageUploadDemo() {
     },
   });
 
-  const uploadImageMutation: UseMutationResult<string, Error, File, unknown> = useMutation({
-    mutationFn: async (file: File) => {
-      const { data: sessionData } = await supabase.auth.getSession()
-      if (!sessionData.session?.user) throw new Error("Not authenticated")
+  const uploadImageMutation: UseMutationResult<string, Error, File, unknown> =
+    useMutation({
+      mutationFn: async (file: File) => {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session?.user) throw new Error("Not authenticated");
 
-      const fileExt = file.name.split(".").pop()
-      const fileName = `${sessionData.session.user.id}-${uuidv4()}.${fileExt}`;
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${
+          sessionData.session.user.id
+        }-${uuidv4()}.${fileExt}`;
 
-      const { error: uploadError, data } = await supabase.storage
-        .from("avatars")
-        .upload(fileName, file);
+        const { error: uploadError, data } = await supabase.storage
+          .from("avatars")
+          .upload(fileName, file);
 
-      if (uploadError) throw uploadError
+        if (uploadError) throw uploadError;
 
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("avatars").getPublicUrl(fileName)
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
-      return publicUrl
-    },
-    onSuccess: (publicUrl) => {
-      console.log("Image uploaded successfully:", publicUrl)
-      handleRemove()
-    },
-    onError: (error) => {
-      console.error("Failed to upload image:", error)
-    },
-  })
+        return publicUrl;
+      },
+      onSuccess: (publicUrl) => {
+        console.log("Image uploaded successfully:", publicUrl);
+        handleRemove();
+      },
+      onError: (error) => {
+        console.error("Failed to upload image:", error);
+      },
+    });
 
   const handleSave = () => {
     console.log("Save button clicked");
@@ -96,47 +103,47 @@ export function ImageUploadDemo() {
     } else {
       console.log("No file selected");
     }
-  }
+  };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(true)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragging(false)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      setIsDragging(false)
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
 
-      const file = e.dataTransfer.files?.[0]
+      const file = e.dataTransfer.files?.[0];
       if (file && file.type.startsWith("image/")) {
         const fakeEvent = {
           target: {
             files: [file],
           },
-        } as unknown as React.ChangeEvent<HTMLInputElement>
-        handleFileChange(fakeEvent)
+        } as unknown as React.ChangeEvent<HTMLInputElement>;
+        handleFileChange(fakeEvent);
       }
     },
-    [handleFileChange],
-  )
+    [handleFileChange]
+  );
 
   return (
-    <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
-      <div className="space-y-2">
+    <div className="w-full space-y-5 rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="space-y-1">
         <h3 className="text-lg font-medium">Upload New Avatar</h3>
         <p className="text-sm text-muted-foreground">
           Supported formats: JPG, PNG, GIF
@@ -159,8 +166,8 @@ export function ImageUploadDemo() {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={cn(
-            "flex h-64 cursor-pointer flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:bg-muted",
-            isDragging && "border-primary/50 bg-primary/5",
+            "flex h-48 cursor-pointer flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:bg-muted",
+            isDragging && "border-primary/50 bg-primary/5"
           )}
         >
           <div className="rounded-full bg-background p-3 shadow-sm">
@@ -218,10 +225,15 @@ export function ImageUploadDemo() {
       )}
 
       {previewUrl && (
-        <Button onClick={handleSave} disabled={uploadImageMutation.status === 'pending'}>
-          {uploadImageMutation.status === 'pending' ? "Uploading..." : "Upload Image"}
+        <Button
+          onClick={handleSave}
+          disabled={uploadImageMutation.status === "pending"}
+        >
+          {uploadImageMutation.status === "pending"
+            ? "Uploading..."
+            : "Upload Image"}
         </Button>
       )}
     </div>
-  )
-} 
+  );
+}

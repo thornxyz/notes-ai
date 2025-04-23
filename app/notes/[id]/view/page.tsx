@@ -10,6 +10,7 @@ import axios from "axios";
 import { Note } from "@/types";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { FaRobot } from "react-icons/fa";
 
 export default function ViewNotePage() {
   const router = useRouter();
@@ -102,9 +103,9 @@ export default function ViewNotePage() {
           <p className="whitespace-pre-wrap">{note.content}</p>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Summary</h2>
+        <div className="flex flex-col space-y-4">
+          <div className="ml-auto">
+            {summary &&<h2 className="text-xl font-semibold">Summary</h2>}
             {!summary && (
               <Button
                 onClick={() => generateSummary()}
@@ -112,7 +113,7 @@ export default function ViewNotePage() {
                 variant="secondary"
                 className="cursor-pointer"
               >
-                {isGeneratingSummary ? "Generating..." : "Generate Summary"}
+                {isGeneratingSummary ? "Generating..." : <div className="flex gap-2 items-center">Generate AI Summary <div className="mt-[2px]"><FaRobot /></div></div>}
               </Button>
             )}
           </div>
