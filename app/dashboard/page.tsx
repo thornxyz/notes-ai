@@ -1,88 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
+import { useNotes } from "@/app/hook/useNotes";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { format } from "date-fns";
 
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-}
+export default function DashboardPage() {
+  const { notes, isLoading } = useNotes();
 
-export default function Page() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const router = useRouter();
-  const supabase = createClient();
-
-  useEffect(() => {
-    const fetchNotes = async () => {
-      setLoading(true);
-      setError("");
-
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        router.push("/");
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("notes")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        setError("Failed to fetch notes.");
-      } else {
-        setNotes(data as Note[]);
-      }
-
-      setLoading(false);
-    };
-
-    fetchNotes();
-  }, [router, supabase]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="max-w-3xl mx-auto mt-12 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Your Notes</h1>
-        <Button
-          className="cursor-pointer"
-          onClick={() => router.push("/notes/new")}
-        >
-          New Note
-        </Button>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">My Notes</h1>
+        <Link href="/notes/new">
+          <Button className="cursor-pointer">Create New Note</Button>
+        </Link>
       </div>
 
-      {loading && <p>Loading notes...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {!loading && notes.length === 0 && (
-        <p>You haven&apos;t created any notes yet.</p>
-      )}
-
-      <div className="grid gap-4">
-        {notes.map((note) => (
-          <Link key={note.id} href={`/notes/${note.id}/edit`}>
-            <div className="border border-border rounded-xl p-4 shadow-sm bg-card hover:shadow-md transition cursor-pointer">
-              <h2 className="text-xl font-semibold">{note.title}</h2>
-              <p className="text-muted-foreground mt-2 line-clamp-3">
-                {note.content}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {notes?.map((note) => (
+          <div
+            key={note.id}
+            className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+          >
+            <Link href={`/notes/${note.id}/edit`}>
+              <h2 className="text-xl font-semibold mb-2">{note.title}</h2>
+              <p className="text-gray-600 mb-4 line-clamp-3">{note.content}</p>
+              <p className="text-sm text-gray-500">
+                {format(new Date(note.created_at), "MMM d, yyyy")}
               </p>
-            </div>
-          </Link>
+            </Link>
+          </div>
         ))}
       </div>
+
+      {notes?.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No notes yet. Create your first note!</p>
+        </div>
+      )}
     </div>
   );
 }

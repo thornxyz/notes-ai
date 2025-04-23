@@ -5,75 +5,49 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/client";
+import { useNotes } from "@/app/hook/useNotes";
 
-export default function Page() {
+export default function NewNotePage() {
+  const router = useRouter();
+  const { createNote } = useNotes();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [error, setError] = useState("");
 
-  const router = useRouter();
-  const supabase = createClient();
-
-  const handleCreateNote = async () => {
-    setLoading(true);
-    setErrorMsg("");
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      setErrorMsg("You must be logged in to create a note.");
-      setLoading(false);
-      return;
-    }
-
-    const { error } = await supabase.from("notes").insert([
-      {
-        user_id: user.id,
-        title,
-        content,
-      },
-    ]);
-
-    setLoading(false);
-
-    if (error) {
-      setErrorMsg(error.message);
-    } else {
+  const handleSave = async () => {
+    try {
+      await createNote.mutateAsync({ title, content });
       router.push("/dashboard");
+    } catch (error) {
+      setError("Failed to create note");
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-12 px-4">
-      <h1 className="text-3xl font-bold mb-6">Create a New Note</h1>
-
-      <div className="space-y-4">
+    <div className="container mx-auto max-w-2xl">
+      <div className="space-y-4 mx-4">
         <Input
-          placeholder="Note Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
+          className="font-semibold h-10 px-4 !text-xl"
         />
-
         <Textarea
-          placeholder="Write your note here..."
-          rows={10}
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          placeholder="Content"
+          className="h-96 resize-y overflow-auto leading-relaxed px-4 py-3 !text-base"
         />
-
-        {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
-
-        <Button
-          onClick={handleCreateNote}
-          disabled={loading || !title.trim() || !content.trim()}
-          className="w-full"
-        >
-          {loading ? "Saving..." : "Save Note"}
-        </Button>
+        {error && <div className="text-red-500">{error}</div>}
+        <div className="flex justify-end gap-4">
+          <Button variant="outline" onClick={() => router.push("/dashboard")}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} disabled={createNote.isPending}>
+            {createNote.isPending ? "Creating..." : "Create Note"}
+          </Button>
+        </div>
       </div>
     </div>
   );
