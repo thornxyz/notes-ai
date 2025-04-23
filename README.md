@@ -1,6 +1,6 @@
 # 📝 Notes.ai
 
-A modern, full-featured note-taking app built with [Next.js](https://nextjs.org), powered by [Supabase](https://supabase.com) for authentication and storage, and enhanced with [DeepSeek](https://deepseek.com) for AI-generated note summaries.
+A modern, full-featured note-taking app built with [Next.js](https://nextjs.org), powered by [Supabase](https://supabase.com) for authentication and storage, and enhanced with [Gemini](https://google.com/genai) for AI-generated note summaries.
 
 ## 🌐 Live Demo
 
@@ -12,7 +12,7 @@ Check out the live version of the app here: [https://notes-ai-ochre.vercel.app/]
 
 - 🔐 **Authentication** with Supabase (Email & Google OAuth)
 - 🗒️ **Create, Edit, Delete Notes** with a sleek and responsive UI
-- 🧠 **AI-Powered Summarization** with DeepSeek to distill your thoughts
+- 🧠 **AI-Powered Summarization** with Gemini to distill your thoughts
 - 📷 **User Profile with Image Upload**
 - 💡 **Dark Mode Toggle**
 - ⚡ Built with **Next.js App Router**, **Tailwind CSS**, and **ShadCN UI**
@@ -43,7 +43,7 @@ Create a `.env.local` file in the root of the project and add the following:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-DEEPSEEK_API_KEY=your_deepseek_api_key
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 > You can get Supabase credentials from your [Supabase project dashboard](https://app.supabase.com).
@@ -58,7 +58,7 @@ DEEPSEEK_API_KEY=your_deepseek_api_key
 ├── hooks/              # Custom React hooks
 ├── lib/                # Helpers and utility logic
 ├── types/              # TypeScript interfaces and types
-├── utils/              # Supabase and DeepSeek clients
+├── utils/              # Supabase and Gemini clients
 ├── public/             # Static assets
 ```
 
@@ -66,7 +66,7 @@ DEEPSEEK_API_KEY=your_deepseek_api_key
 
 ## 🧠 How Summarization Works
 
-Each note can be sent to the DeepSeek API using the "Summarize" button, which uses powerful AI to generate a short and meaningful summary of your content.
+Each note can be sent to the Gemini API using the "Summarize" button, which uses powerful AI to generate a short and meaningful summary of your content.
 
 This allows you to quickly review and understand long-form notes with ease.
 
@@ -76,9 +76,8 @@ This allows you to quickly review and understand long-form notes with ease.
 
 - [Next.js](https://nextjs.org)
 - [Supabase](https://supabase.com)
-- [DeepSeek](https://deepseek.com)
+- [Gemini](https://google.com/genai)
 - [Tailwind CSS](https://tailwindcss.com)
 - [ShadCN UI](https://ui.shadcn.dev)
 - [TypeScript](https://www.typescriptlang.org)
 
----
