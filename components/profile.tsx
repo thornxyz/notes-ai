@@ -57,7 +57,11 @@ function Profile() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="w-12 h-12 cursor-pointer outline-none ring-0 focus:outline-none focus:ring-0">
-              <AvatarImage src={data.image_url} className="w-12 h-12" />
+              <AvatarImage
+                src={data.image_url}
+                alt="User avatar"
+                className="w-12 h-12"
+              />
               <AvatarFallback className="text-xl">
                 {data.email[0].toUpperCase() + data.email[1].toUpperCase()}
               </AvatarFallback>

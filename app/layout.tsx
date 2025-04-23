@@ -33,11 +33,11 @@ export default function RootLayout({
         <QueryProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
-            <main className="max-w-6xl min-h-screen mx-auto py-10 space-y-10">
+            <main className="max-w-6xl min-h-screen mx-auto py-5 space-y-10">
               <Navbar />
               {children}
             </main>

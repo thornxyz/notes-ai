@@ -25,16 +25,6 @@ export default function Home() {
             Go to Dashboard
           </Button>
         </Link>
-
-        <Link href="/profile">
-          <Button
-            variant="outline"
-            size="lg"
-            className="cursor-pointer px-8 py-6 text-lg"
-          >
-            View Profile
-          </Button>
-        </Link>
       </div>
     </div>
   );

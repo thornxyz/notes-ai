@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useNotes } from "@/app/hook/useNotes";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
+import { Note } from "@/types";
 
 export default function EditNotePage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function EditNotePage() {
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
 
-  const { data: note, isLoading } = useQuery({
+  const { data: note, isLoading } = useQuery<Note>({
     queryKey: ["note", id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -31,6 +32,8 @@ export default function EditNotePage() {
       return data;
     },
     enabled: !!id,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   useEffect(() => {
@@ -88,13 +91,18 @@ export default function EditNotePage() {
 
         <div className="flex justify-between">
           <div className="flex gap-4">
-            <Button onClick={handleSave} disabled={updateNote.isPending}>
+            <Button
+              onClick={handleSave}
+              disabled={updateNote.isPending}
+              className="cursor-pointer"
+            >
               {updateNote.isPending ? "Saving..." : "Save"}
             </Button>
             <Button
               variant="outline"
               onClick={handleCancel}
               disabled={updateNote.isPending || deleteNote.isPending}
+              className="cursor-pointer"
             >
               Cancel
             </Button>
@@ -103,6 +111,7 @@ export default function EditNotePage() {
             variant="destructive"
             onClick={handleDelete}
             disabled={deleteNote.isPending}
+            className="cursor-pointer"
           >
             {deleteNote.isPending ? "Deleting..." : "Delete"}
           </Button>
