@@ -13,6 +13,8 @@ Check out the live version of the app here: [https://notes-ai-ochre.vercel.app/]
 - 🔐 **Authentication** with Supabase (Email & Google OAuth)
 - 🗒️ **Create, Edit, Delete Notes** with a sleek and responsive UI
 - 🧠 **AI-Powered Summarization** with Gemini to distill your thoughts
+- ⚛️ **Optimized Data Fetching** with React Query for seamless and performant client-side state management
+- 📦 **Auto Sync & Caching** – Notes and user data are cached and kept in sync using React Query
 - 📷 **User Profile with Image Upload**
 - 💡 **Dark Mode Toggle**
 - ⚡ Built with **Next.js App Router**, **Tailwind CSS**, and **ShadCN UI**
@@ -77,7 +79,7 @@ This allows you to quickly review and understand long-form notes with ease.
 - [Next.js](https://nextjs.org)
 - [Supabase](https://supabase.com)
 - [Gemini](https://google.com/genai)
+- [React Query](https://tanstack.com/query/latest)
 - [Tailwind CSS](https://tailwindcss.com)
 - [ShadCN UI](https://ui.shadcn.dev)
 - [TypeScript](https://www.typescriptlang.org)
-
