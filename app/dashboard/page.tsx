@@ -27,7 +27,7 @@ export default function DashboardPage() {
             key={note.id}
             className="border rounded-lg p-4 hover:shadow-md transition-shadow"
           >
-            <Link href={`/notes/${note.id}/edit`}>
+            <Link href={`/notes/${note.id}/view`}>
               <h2 className="text-xl font-semibold mb-2">{note.title}</h2>
               <p className="text-gray-600 mb-4 line-clamp-3">{note.content}</p>
               <p className="text-sm text-gray-500">
