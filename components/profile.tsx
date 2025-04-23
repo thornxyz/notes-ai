@@ -8,6 +8,12 @@ import { createClient } from "@/utils/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { protectedRoutes } from "@/lib/constant";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function Profile() {
   const { isFetching, data } = useUser();
@@ -31,6 +37,14 @@ function Profile() {
     }
   };
 
+  const handleProfileClick = () => {
+    router.push("/profile");
+  };
+
+  const handleDashboardClick = () => {
+    router.push("/dashboard");
+  };
+
   return (
     <div>
       {!data.id ? (
@@ -40,12 +54,31 @@ function Profile() {
           </Button>
         </Link>
       ) : (
-        <Avatar className="w-12 h-12 cursor-pointer" onClick={handleLogout}>
-          <AvatarImage src={data.image_url} className="w-12 h-12" />
-          <AvatarFallback className="text-xl">
-            {data.email[0].toUpperCase() + data.email[1].toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="w-12 h-12 cursor-pointer outline-none ring-0 focus:outline-none focus:ring-0">
+              <AvatarImage src={data.image_url} className="w-12 h-12" />
+              <AvatarFallback className="text-xl">
+                {data.email[0].toUpperCase() + data.email[1].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={handleProfileClick}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDashboardClick}>
+              Dashboard
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-600 focus:text-red-700"
+              onClick={handleLogout}
+            >
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </div>
   );

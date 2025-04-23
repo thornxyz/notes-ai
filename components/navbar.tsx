@@ -5,7 +5,7 @@ function Navbar() {
   return (
     <div className="flex justify-between items-center mx-4">
       <Link href="/">
-        <h1 className="text-xl font-bold">Logo</h1>
+        <h1 className="text-4xl font-bold">Notes</h1>
       </Link>
       <Profile />
     </div>
