@@ -42,8 +42,8 @@ function Profile() {
       ) : (
         <Avatar className="w-12 h-12 cursor-pointer" onClick={handleLogout}>
           <AvatarImage src={data.image_url} className="w-12 h-12" />
-          <AvatarFallback className="text-2xl">
-            {data.email[0].toUpperCase()}
+          <AvatarFallback className="text-xl">
+            {data.email[0].toUpperCase() + data.email[1].toUpperCase()}
           </AvatarFallback>
         </Avatar>
       )}

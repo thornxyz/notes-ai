@@ -1,48 +1,164 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { KeyRound } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { createClient } from "@/utils/supabase/client";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 function Page() {
   const params = useSearchParams().get("next");
+  const supabase = createClient();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
     try {
-      const supabase = createClient();
+      setIsLoading(true);
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: location.origin + "/auth/callback?next=" + params,
+          redirectTo: params
+            ? `${location.origin}/auth/callback?next=${params}`
+            : `${location.origin}/auth/callback`,
         },
       });
       if (error) throw error;
-      console.log("Sign in successful:", data);
+      console.log("Google Sign in successful:", data);
     } catch (error) {
-      console.error("Error signing in:", error);
+      console.error("Error signing in with Google:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailAuth = async () => {
+    setErrorMessage("");
+    setIsLoading(true);
+    try {
+      if (isSigningUp) {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: params
+              ? `${location.origin}/auth/callback?next=${params}`
+              : `${location.origin}/auth/callback`,
+          },
+        });
+
+        if (error) throw error;
+
+        setErrorMessage(
+          "Success! Please check your email to confirm your account."
+        );
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        window.location.href = params ? decodeURIComponent(params) : "/";
+      }
+    } catch (error: any) {
+      setErrorMessage(error.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center w-full mt-30">
-      <div className="w-96 rounded-md border p-8 space-y-5">
+    <div className="flex items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md space-y-6 rounded-xl border border-border bg-card p-8 shadow-md">
         <div className="flex items-center gap-2">
           <KeyRound />
-          <h1 className="text-2xl font-bold">Next + Supabase</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Welcome to Notes
+          </h1>
         </div>
-        <p className="text-sm text-gray-300">Register/Sign In Today 👇</p>
-        <Button
-          className="w-full flex items-center cursor-pointer"
-          variant="outline"
-          onClick={handleGoogleSignIn}
-        >
-          <FcGoogle />
-          Google
-        </Button>
+        <p className="text-sm text-muted-foreground">
+          {isSigningUp
+            ? "Create your account below."
+            : "Please sign in to continue."}
+        </p>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          {errorMessage && (
+            <p className="text-red-500 text-sm font-medium">{errorMessage}</p>
+          )}
+
+          <Button
+            className="w-full p-4 cursor-pointer"
+            onClick={handleEmailAuth}
+            disabled={isLoading}
+          >
+            {isLoading
+              ? "Loading..."
+              : isSigningUp
+              ? "Sign Up with Email"
+              : "Log In with Email"}
+          </Button>
+
+          <div className="flex justify-center items-center">
+            <button
+              onClick={() => setIsSigningUp(!isSigningUp)}
+              className="text-base text-muted-foreground hover:underline text-center cursor-pointer"
+            >
+              {isSigningUp
+                ? "Already have an account? Sign In"
+                : "Don't have an account? Sign Up"}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-4 ">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-sm text-muted-foreground">or</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <Button
+            className="w-full p-6 flex items-center justify-center gap-2 cursor-pointer"
+            variant="outline"
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
+          >
+            <FcGoogle className="text-xl" />
+            {isLoading ? "Loading..." : "Continue with Google"}
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
+
 export default Page;
