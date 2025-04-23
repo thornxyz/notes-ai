@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,34 +20,31 @@ export default function EditNotePage() {
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
 
-  const { data: note, isLoading } = useQuery<Note>({
+  const { isLoading } = useQuery<Note>({
     queryKey: ["note", id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("notes")
         .select("*")
         .eq("id", id)
         .single();
-      if (error) throw error;
-      return data;
+      if (data) {
+        setTitle(data.title);
+        setContent(data.content);
+        return data;
+      }
+      throw new Error("Note not found");
     },
     enabled: !!id,
     staleTime: 0,
     refetchOnMount: true,
   });
 
-  useEffect(() => {
-    if (note) {
-      setTitle(note.title);
-      setContent(note.content);
-    }
-  }, [note]);
-
   const handleSave = async () => {
     try {
       await updateNote.mutateAsync({ id, title, content });
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
       setError("Failed to save note");
     }
   };
@@ -56,7 +53,7 @@ export default function EditNotePage() {
     try {
       await deleteNote.mutateAsync(id);
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
       setError("Failed to delete note");
     }
   };

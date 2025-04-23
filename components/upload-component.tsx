@@ -67,7 +67,7 @@ export function ImageUploadDemo() {
           sessionData.session.user.id
         }-${uuidv4()}.${fileExt}`;
 
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from("avatars")
           .upload(fileName, file);
 

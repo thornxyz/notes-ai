@@ -19,7 +19,7 @@ export default function NewNotePage() {
     try {
       await createNote.mutateAsync({ title, content });
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
       setError("Failed to create note");
     }
   };
