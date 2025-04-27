@@ -44,7 +44,10 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
-    if (!user && protectedRoutes.includes(request.nextUrl.pathname)) {
+    if (!user && (
+        protectedRoutes.includes(request.nextUrl.pathname) || 
+        protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route + '/'))
+    )) {
         const url = request.nextUrl.clone();
         return NextResponse.redirect(new URL('/auth?next=' + url.pathname, request.url));
     }

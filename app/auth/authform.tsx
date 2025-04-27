@@ -26,7 +26,7 @@ function AuthForm() {
         provider: "google",
         options: {
           redirectTo: params
-            ? `${location.origin}/auth/callback?next=${params}`
+            ? `${location.origin}/auth/callback?next=${encodeURIComponent(params)}`
             : `${location.origin}/auth/callback`,
         },
       });
